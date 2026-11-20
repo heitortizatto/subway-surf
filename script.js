@@ -215,12 +215,18 @@ let distanceTraveled = 0;
 let lastTime = 0;
 let shakeTimer = 0;
 
+// Configuração da Câmera Dinâmica e Perspectiva 3D
 const HORIZON_RATIO = 0.27;
-const CAMERA_HEIGHT = 2.55;
+const BASE_CAMERA_HEIGHT = 2.55;
 const FOV = 300;
 const LANE_WIDTH = 2.25;
 const SPAWN_Z = 98;
 const PLAYER_Z = 6.2;
+
+const camera = {
+  x: 0,
+  y: BASE_CAMERA_HEIGHT
+};
 
 const player = {
   lane: 0,
@@ -402,6 +408,9 @@ function resetGame() {
   speed = 18.5;
   distanceTraveled = 0;
   shakeTimer = 0;
+
+  camera.x = 0;
+  camera.y = BASE_CAMERA_HEIGHT;
 
   player.lane = 0;
   player.prevLane = 0;
@@ -646,8 +655,8 @@ function project(x, y, z) {
   const scale = FOV / safeZ;
   const horizonY = canvas.height * HORIZON_RATIO;
   return {
-    x: canvas.width / 2 + x * scale,
-    y: horizonY + (CAMERA_HEIGHT - y) * scale,
+    x: canvas.width / 2 + (x - camera.x) * scale,
+    y: horizonY + (camera.y - y) * scale,
     scale
   };
 }
@@ -703,6 +712,13 @@ function update(dt) {
     player.y = player.groundY;
     player.isJumping = false;
   }
+
+  // Câmera acompanha suavemente o personagem ao subir nos metrôs e pular
+  const airHeight = Math.max(0, player.y - player.groundY);
+  const targetCamY = BASE_CAMERA_HEIGHT + player.groundY * 0.92 + airHeight * 0.45;
+  const targetCamX = player.visualX * LANE_WIDTH * 0.35;
+  camera.y += (targetCamY - camera.y) * Math.min(1, dt * 8.5);
+  camera.x += (targetCamX - camera.x) * Math.min(1, dt * 10);
 
   const playerTop = player.y + (player.isSliding ? 0.72 : 1.65);
 
@@ -832,7 +848,7 @@ function draw() {
 
   ctx.fillStyle = 'rgba(254, 249, 195, 0.72)';
   ctx.beginPath();
-  ctx.arc(w * 0.76, horizonY * 0.45, 34, 0, Math.PI * 2);
+  ctx.arc(w * 0.76 - camera.x * 4, horizonY * 0.45, 34, 0, Math.PI * 2);
   ctx.fill();
 
   drawCitySkyline(w, horizonY);
@@ -866,7 +882,13 @@ function draw() {
       player.y >= o.height - 0.5 &&
       PLAYER_Z >= o.z - 0.5 &&
       PLAYER_Z <= o.z + o.length + 0.5;
-    renderList.push({ kind: 'obs', z: onTrain ? PLAYER_Z + 0.5 : o.z, data: o });
+    const onRamp =
+      o.type === 'ramp_train' &&
+      Math.abs(o.lane - player.visualX) < 0.6 &&
+      PLAYER_Z >= o.z - 0.5 &&
+      PLAYER_Z <= o.z + 5.2;
+
+    renderList.push({ kind: 'obs', z: onTrain || onRamp ? PLAYER_Z + 0.5 : o.z, data: o });
   });
   collectibles.forEach((c) => renderList.push({ kind: 'item', z: c.z, data: c }));
   renderList.push({ kind: 'player', z: PLAYER_Z });
@@ -890,16 +912,19 @@ function draw() {
 }
 
 function drawCitySkyline(w, horizonY) {
+  const parallax = -camera.x * 10;
   const buildings = [
+    { x: -0.10, w: 0.13, h: 58, color: '#0369a1' },
     { x: 0.02, w: 0.13, h: 64, color: '#0369a1' },
     { x: 0.14, w: 0.11, h: 90, color: '#0284c7' },
     { x: 0.25, w: 0.14, h: 52, color: '#0369a1' },
     { x: 0.58, w: 0.13, h: 84, color: '#0284c7' },
     { x: 0.71, w: 0.12, h: 56, color: '#0369a1' },
-    { x: 0.83, w: 0.15, h: 74, color: '#0284c7' }
+    { x: 0.83, w: 0.15, h: 74, color: '#0284c7' },
+    { x: 0.97, w: 0.14, h: 60, color: '#0369a1' }
   ];
   for (const b of buildings) {
-    const bx = w * b.x;
+    const bx = w * b.x + parallax;
     const bw = w * b.w;
     const by = horizonY - b.h;
     ctx.fillStyle = b.color;
