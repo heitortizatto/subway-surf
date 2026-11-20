@@ -1,1 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Metro Rush - Endless Runner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="gameCanvas"></canvas>
 
+    <div id="hud">
+      <div class="hud-box">
+        <div class="score-label">Pontuação</div>
+        <div class="score-value" id="scoreDisplay">0</div>
+      </div>
+      <div class="hud-box" style="text-align: right;">
+        <div class="score-label">Moedas</div>
+        <div class="score-value coin-value" id="coinsDisplay">0</div>
+      </div>
+    </div>
+
+    <div id="powerups-bar"></div>
+
+    <!-- Tela Inicial -->
+    <div id="startScreen" class="overlay">
+      <div class="badge-top">ENDLESS RUNNER</div>
+      <h1>METRO RUSH</h1>
+      <p class="subtitle">Desvie dos trens, salte barreiras, pegue power-ups e bata o seu recorde nos trilhos!</p>
+      <button class="btn" id="startBtn">Jogar Agora</button>
+      <div class="controls-hint">
+        <strong>PC:</strong> Setas ou WASD (Mover, Pular, Deslizar)<br />
+        <strong>Celular:</strong> Deslize o dedo (Swipe) na tela
+      </div>
+    </div>
+
+    <!-- Tela de Game Over -->
+    <div id="gameOverScreen" class="overlay hidden">
+      <h1 class="gameover-title">FIM DE JOGO!</h1>
+      <p class="subtitle new-record" id="newRecordBadge"></p>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="score-label">Pontos</div>
+          <div class="score-value" id="finalScore">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="score-label">Recorde</div>
+          <div class="score-value highlight-blue" id="highScoreDisplay">0</div>
+        </div>
+        <div class="stat-card span-two">
+          <div class="score-label">Moedas Coletadas</div>
+          <div class="score-value coin-value" id="finalCoins">0</div>
+        </div>
+      </div>
+      <button class="btn" id="restartBtn">Jogar Novamente</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
