@@ -10,7 +10,8 @@
   <div id="game-container">
     <canvas id="gameCanvas"></canvas>
 
-    <div id="hud">
+    <!-- HUD durante a corrida -->
+    <div id="hud" class="hidden">
       <div class="hud-box">
         <div class="score-label">Pontuação</div>
         <div class="score-value" id="scoreDisplay">0</div>
@@ -23,37 +24,95 @@
 
     <div id="powerups-bar"></div>
 
-    <!-- Tela Inicial -->
+    <!-- Tela Inicial (Início) -->
     <div id="startScreen" class="overlay">
-      <div class="badge-top">ENDLESS RUNNER</div>
-      <h1>METRO RUSH</h1>
-      <p class="subtitle">Desvie dos trens, suba nas rampas, salte barreiras e bata o seu recorde nos trilhos!</p>
-      <button class="btn" id="startBtn">Jogar Agora</button>
-      <div class="controls-hint">
-        <strong>PC:</strong> Setas ou WASD (Mover, Pular, Deslizar)<br />
-        <strong>Celular:</strong> Deslize o dedo (Swipe) na tela
+      <div class="top-stats-bar">
+        <div class="stat-pill">
+          <span class="pill-label">🏆 Recorde</span>
+          <span class="pill-val blue" id="startHighScore">0</span>
+        </div>
+        <div class="stat-pill">
+          <span class="pill-label">⭐ Última</span>
+          <span class="pill-val" id="startLastScore">0</span>
+        </div>
+        <div class="stat-pill coin-border">
+          <span class="pill-label">🪙 Moedas</span>
+          <span class="pill-val gold" id="startTotalCoins">0</span>
+        </div>
       </div>
+
+      <div class="title-block">
+        <h1>METRO RUSH</h1>
+        <p class="subtitle">Junte moedas nos trilhos e desbloqueie novos corredores!</p>
+      </div>
+
+      <!-- Vitrine interativa de personagens no Início -->
+      <div class="char-showcase">
+        <button class="arrow-btn" id="prevCharBtn" aria-label="Anterior">◀</button>
+        <div class="showcase-info">
+          <div class="showcase-name" id="showcaseName">🧢 Leo</div>
+          <div class="showcase-desc" id="showcaseDesc">Corredor clássico dos trilhos</div>
+          <button class="showcase-action" id="showcaseActionBtn">Equipado ✓</button>
+        </div>
+        <button class="arrow-btn" id="nextCharBtn" aria-label="Próximo">▶</button>
+      </div>
+
+      <div class="menu-buttons">
+        <button class="btn" id="startBtn">▶ Jogar Agora</button>
+        <button class="btn btn-shop" id="openShopBtn">🛒 Loja Completa</button>
+      </div>
+
+      <div class="controls-hint">
+        <strong>PC:</strong> Setas ou WASD  |  <strong>Celular:</strong> Deslize o dedo
+      </div>
+    </div>
+
+    <!-- Tela da Loja -->
+    <div id="shopScreen" class="overlay hidden">
+      <div class="shop-header">
+        <div>
+          <div class="score-label">Personagens</div>
+          <h2 class="shop-title">LOJA</h2>
+        </div>
+        <div class="stat-pill coin-border">
+          <span class="pill-label">Carteira</span>
+          <span class="pill-val gold" id="shopCoinsDisplay">🪙 0</span>
+        </div>
+      </div>
+
+      <div id="charactersGrid" class="characters-list"></div>
+
+      <button class="btn btn-secondary" id="closeShopBtn">← Voltar ao Início</button>
     </div>
 
     <!-- Tela de Game Over -->
     <div id="gameOverScreen" class="overlay hidden">
       <h1 class="gameover-title">FIM DE JOGO!</h1>
-      <p class="subtitle new-record" id="newRecordBadge"></p>
+      <p class="new-record" id="newRecordBadge"></p>
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="score-label">Pontos</div>
+          <div class="score-label">Pontuação</div>
           <div class="score-value" id="finalScore">0</div>
         </div>
         <div class="stat-card">
           <div class="score-label">Recorde</div>
           <div class="score-value highlight-blue" id="highScoreDisplay">0</div>
         </div>
-        <div class="stat-card span-two">
-          <div class="score-label">Moedas Coletadas</div>
-          <div class="score-value coin-value" id="finalCoins">0</div>
+        <div class="stat-card">
+          <div class="score-label">Moedas Pegas</div>
+          <div class="score-value coin-value" id="finalCoins">+0</div>
+        </div>
+        <div class="stat-card">
+          <div class="score-label">Total Salvo</div>
+          <div class="score-value coin-value" id="gameOverTotalCoins">0</div>
         </div>
       </div>
-      <button class="btn" id="restartBtn">Jogar Novamente</button>
+
+      <div class="menu-buttons">
+        <button class="btn" id="restartBtn">↻ Jogar Novamente</button>
+        <button class="btn btn-shop" id="gameOverShopBtn">🛒 Loja de Personagens</button>
+        <button class="btn btn-secondary" id="backToMenuBtn">🏠 Início</button>
+      </div>
     </div>
   </div>
 
